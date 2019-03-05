@@ -14,44 +14,44 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 import fr.istic.tl.tp2.*;
 
 public class Parseur {
 
 	
-	public static File parseHtml(String nomFichier) throws IOException 
+	public static void parseHtml(String nomFichier) throws IOException 
 	{
-		
 		BufferedReader br = new BufferedReader(new FileReader(nomFichier));
 		String line;
 		String actual, dept, arro, canton, type, article, nom, divers;
 		
+		final ArrayList<String> tagValues = new ArrayList<String>();
+		
 		while ((line = br.readLine()) != null) {
 			
-			String regexLigne = "<tr>(.*)<\\/tr>";
+			// &eacute; = é
+			// &nbsp; = espace
 			
+			String regexLigne = "<td>(.+?)<\\/td>";
 			Pattern p = Pattern.compile(regexLigne);
 			Matcher m = p.matcher(line);
+			String concatTags = "";
 			
-	
-			if (m.matches()) {
-				
-				System.out.println("Actual : " + m.group(1) );
-				System.out.println("Chef lieu" + m.group(2) );
-				
-				
-				
-			}
-	   
-		   
+			while (m.find()) {
+				tagValues.add(m.group(1));
+			} 
 		}
+		
+		System.out.println(tagValues);
 		
 		br.close();
 		
-		return null;
+		//creerFichierSQL(tagValues);
 	}
 	
-	public static File creerFichierSQL(ArrayList<LigneBDD> liste) throws FileNotFoundException, UnsupportedEncodingException {
+	public static void creerFichierSQL(ArrayList<LigneBDD> liste) throws FileNotFoundException, UnsupportedEncodingException {
 		
 		PrintWriter writer = new PrintWriter("requete.sql", "UTF-8");
 		
@@ -62,8 +62,6 @@ public class Parseur {
 		}
 		
 		writer.close();	
-		
-		return null;
 		
 	}
 	
